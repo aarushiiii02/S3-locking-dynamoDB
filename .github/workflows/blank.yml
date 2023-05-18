@@ -12,6 +12,12 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      region:
+        description: 'Custom region for EC2 instance'
+        required: true
+        default: 'us-west-2'  # Default region if not specified
+
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,21 +28,27 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
+      # Checks-out your0 repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: Checkout source code
+      uses: actions/checkout@v2
+    
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+    
+    - name: Configure AWS credentials
+      run: |
+        echo ${{ secrets.AWS_ACCESS_KEY_ID }} >> ~/.aws/credentials
+        echo ${{ secrets.AWS_SECRET_ACCESS_KEY }} >> ~/.aws/credentials
+    
+    - name: Initialize Terraform
+      run: terraform init
+    
+    - name: Plan Terraform changes
+      run: terraform plan -var="region=${{ github.event.inputs.region }}"
+    
+    - name: Apply Terraform changes
+      run: terraform apply -auto-approve -var="region=${{ github.event.inputs.region }}"
       # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
-      - name: Prompt for Intake Region
-        id: prompt
-        run: |
-          echo "::set-output name=region::${{ env.INPUT_REGION }}"
-        env:
-          INPUT_REGION: ${{ github.event.inputs.region }}
+      
