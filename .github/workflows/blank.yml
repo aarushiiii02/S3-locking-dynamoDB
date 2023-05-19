@@ -42,7 +42,7 @@ jobs:
 
     - name: Initialize Terraform
       run: |
-        terraform init
+        terraform init -backend-config="bucket=backend-aarushi"
 
     - name: Plan Terraform changes
       run: terraform plan -var="region=${{ github.event.inputs.region }}"
