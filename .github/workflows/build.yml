@@ -47,6 +47,9 @@ jobs:
         aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
         aws-session-token: ${{secrets.AWS_SESSION_TOKEN}}
         Aws-region: ${{env.region}}
+      
+    - name: Set Terraform inputs
+      run: echo "region=${{ github.event.inputs.region }}" >> $GITHUB_ENV
 
     - name: Initialize Terraform
       run: terraform init -reconfigure -backend-config="bucket=${{env.bucket}}" -backend-config="key=${{env.key}}" -backend-config="region=${{env.region}}"
