@@ -16,7 +16,7 @@ on:
 env:
    bucket: backend-aarushi
    key: terraform.tfstate
-   region: ${{github.event.inputs.region}}
+   TF_VAR_region: ${{github.event.inputs.region}}
    dynamo_table: aarushi-TB
    
 
@@ -48,7 +48,7 @@ jobs:
         Aws-region: ${{env.region}}
 
     - name: Initialize Terraform
-      run: terraform init -reconfigure -backend-config="bucket=${{env.bucket}}" -backend-config="key=${{env.key}}" -backend-config="region=${{env.region}}"
+      run: terraform init -reconfigure -backend-config="bucket=${{env.bucket}}" -backend-config="key=${{env.key}}" -backend-config="region=${{env.TF_VAR_region}}"
       
     - name: Plan Terraform changes
       run: terraform plan 
