@@ -47,7 +47,7 @@ jobs:
         Aws-region: ${{env.region}}
 
     - name: Initialize Terraform
-      run: terraform init -reconfigure -backend-config="bucket=${{env.bucket}}" -backend-config="key=${{env.tfstate_file}}"
+      run: terraform init -reconfigure -backend-config="bucket=${{env.bucket}}" -backend-config="key=${{env.tfstate_file}}" -backend-config="region=${{env.region}}"
       
     - name: Plan Terraform changes
       run: terraform plan 
